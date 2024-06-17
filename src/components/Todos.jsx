@@ -1,7 +1,10 @@
-// src/components/Todos.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Typography, Button, TextField, Select, MenuItem, Checkbox, FormControlLabel } from '@mui/material';
+import {
+    Box, Typography, Button, TextField, Select, MenuItem, Checkbox, FormControlLabel, IconButton
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Todos = () => {
     const [todos, setTodos] = useState([]);
@@ -30,7 +33,8 @@ const Todos = () => {
     };
 
     const handleUpdate = async (id) => {
-        const title = prompt('Enter new todo title');
+        let todo = todos.find(todo => todo.id === id);
+        const title = prompt("Update the ToDo", todo.title);
         if (title) {
             const response = await axios.put(`http://localhost:5000/todos/${id}`, { ...todos.find(todo => todo.id === id), title });
             setTodos(todos.map(todo => (todo.id === id ? response.data : todo)));
@@ -76,6 +80,12 @@ const Todos = () => {
             <Box component="ul" sx={{ listStyleType: 'none', padding: 0 }}>
                 {sortedTodos.map(todo => (
                     <Box component="li" key={todo.id} sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: 2 }}>
+                        <IconButton color="secondary" onClick={() => handleUpdate(todo.id)}>
+                            <EditIcon />
+                        </IconButton>
+                        <IconButton color="error" onClick={() => handleDelete(todo.id)}>
+                            <DeleteIcon />
+                        </IconButton>
                         <FormControlLabel
                             control={<Checkbox checked={todo.completed} onChange={() => handleToggle(todo.id)} />}
                             label={
@@ -87,8 +97,6 @@ const Todos = () => {
                                 </Typography>
                             }
                         />
-                        <Button variant="contained" color="secondary" onClick={() => handleUpdate(todo.id)}>Update</Button>
-                        <Button variant="contained" color="error" onClick={() => handleDelete(todo.id)}>Delete</Button>
                     </Box>
                 ))}
             </Box>

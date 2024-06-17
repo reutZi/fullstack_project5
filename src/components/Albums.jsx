@@ -1,6 +1,7 @@
 // src/components/Albums.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Photos from "./Photos";
 
 const Albums = () => {
     const [albums, setAlbums] = useState([]);
@@ -92,15 +93,7 @@ const Albums = () => {
                 <div>
                     <h2>{selectedAlbum.title}</h2>
                     <h3>Photos</h3>
-                    <ul>
-                        {photos.map(photo => (
-                            <li key={photo.id}>
-                                {photo.title}
-                                <button onClick={() => handleUpdatePhoto(photo.id)}>Update</button>
-                                <button onClick={() => handleDeletePhoto(photo.id)}>Delete</button>
-                            </li>
-                        ))}
-                    </ul>
+                    <Photos albumId={selectedAlbum.id}/>
                     <button onClick={handleAddPhoto}>Add Photo</button>
                 </div>
             )}

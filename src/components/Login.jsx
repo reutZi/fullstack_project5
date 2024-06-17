@@ -1,15 +1,15 @@
-// src/components/Login.js
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { TextField, Button, Typography, Box, Link } from '@mui/material';
 import AuthContext from '../contexts/AuthContext';
 
 const schema = yup.object().shape({
-    userName: yup.string().required(),
-    password: yup.string().min(4).required(),
+    userName: yup.string().required('Username is required'),
+    password: yup.string().min(4, 'Password must be at least 4 characters').required('Password is required'),
 });
 
 const Login = () => {
@@ -22,43 +22,69 @@ const Login = () => {
         try {
             const response = await axios.get(`http://localhost:5000/users?username=${data.userName}`);
 
-            if(!response.status === 200){
-                throw new Error('User name does not exist');
+            if (!response.status === 200) {
+                throw new Error('Username does not exist');
             }
-
 
             const user = response.data[0];
 
-            if (user.website === data.password ) {
+            if (user.website === data.password) {
                 login(user.username);
             } else {
                 throw new Error('Invalid password.');
             }
-          } catch (error) {
+        } catch (error) {
             alert(error);
-          }
+        }
     };
 
     return (
-        <div>
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                    <label>UserName</label>
-                    <input type="text" {...register('userName')} />
-                    {errors.userName && <p>{errors.userName.message}</p>}
-                </div>
-                <div>
-                    <label>Password</label>
-                    <input type="password" {...register('password')} />
-                    {errors.password && <p>{errors.password.message}</p>}
-                </div>
-                <button type="submit">Login</button>
-                <p>
-                 Don't have an account? <NavLink to="/register">Sign up</NavLink>
-                </p>
-            </form>
-        </div>
+        <Box 
+            display="flex" 
+            flexDirection="column" 
+            alignItems="center" 
+            justifyContent="center" 
+            minHeight="100vh"
+        >
+            <Typography variant="h4" component="h2" gutterBottom>
+                Login
+            </Typography>
+            <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1, width: '300px' }}>
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="userName"
+                    label="Username"
+                    {...register('userName')}
+                    error={!!errors.userName}
+                    helperText={errors.userName?.message}
+                />
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    id="password"
+                    label="Password"
+                    type="password"
+                    {...register('password')}
+                    error={!!errors.password}
+                    helperText={errors.password?.message}
+                />
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    sx={{ mt: 3, mb: 2 }}
+                >
+                    Login
+                </Button>
+                <Typography variant="body2" align="center">
+                    Don't have an account? <Link component={NavLink} to="/register">Sign up</Link>
+                </Typography>
+            </Box>
+        </Box>
     );
 };
 

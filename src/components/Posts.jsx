@@ -1,9 +1,7 @@
-// src/components/Posts.js
 import React, { useState, useEffect, useContext} from 'react';
 import axios from 'axios';
 import AuthContext from '../contexts/AuthContext';
 import Comment from './Comment';
-import { useForm } from 'react-hook-form';
 
 const Posts = () => {
     const [posts, setPosts] = useState([]);
@@ -14,8 +12,6 @@ const Posts = () => {
     const [searchCriteria, setSearchCriteria] = useState('title');
 
     const { user } = useContext(AuthContext);
-
-
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -41,10 +37,10 @@ const Posts = () => {
         }
     };
 
-  const handleDeletePost = async (id) => {
-    await axios.delete(`http://localhost:5000/posts/${id}`);
-    setPosts(posts.filter(post => post.id !== id));
-  };
+    const handleDelete = async (id) => {
+        await axios.delete(`http://localhost:5000/posts/${id}`);
+        setPosts(posts.filter(post => post.id !== id));
+    };
 
     const handleUpdate = async (id) => {
         const title = prompt('Enter new post title', posts.find(post => post.id === id).title);
