@@ -1,131 +1,122 @@
-import React, { useState, useEffect } from 'react';
+// src/components/Posts.js
+import React, { useState, useEffect, useContext} from 'react';
 import axios from 'axios';
+import AuthContext from '../contexts/AuthContext';
+import Comment from './Comment';
+import { useForm } from 'react-hook-form';
 
 const Posts = () => {
-  const [posts, setPosts] = useState([]);
-  const [selectedPost, setSelectedPost] = useState(null);
-  const [comments, setComments] = useState([]);
-  const [filter, setFilter] = useState('');
-  const [newPost, setNewPost] = useState({ title: '', body: '' });
-  const [newComment, setNewComment] = useState('');
+    const [posts, setPosts] = useState([]);
+    const [selectedPost, setSelectedPost] = useState(null);
+    const [comments, setComments] = useState([]);
+    const [search, setSearch] = useState('');
+    const [commentsOpen, setCommentsOpen] = useState(false);
+    const [searchCriteria, setSearchCriteria] = useState('title');
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const user = JSON.parse(localStorage.getItem('user'));
-      const response = await axios.get(`http://localhost:5000/posts?userId=${user.id}`);
-      setPosts(response.data);
+    const { user } = useContext(AuthContext);
+
+
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            const response = await axios.get(`http://localhost:5000/posts?userId=${user.id}`);
+            setPosts(response.data);
+        };
+        fetchPosts();
+    }, []);
+
+    const handleSelect = async (post) => {
+        setSelectedPost(post);
+        const response = await axios.get(`http://localhost:5000/comments?postId=${post.id}`);
+        setComments(response.data);
+        setCommentsOpen(false);
     };
 
-    fetchPosts();
-  }, []);
-
-  const handleAddPost = async () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const response = await axios.post('http://localhost:5000/posts', { ...newPost, userId: user.id });
-    setPosts([...posts, response.data]);
-    setNewPost({ title: '', body: '' });
-  };
+    const handleAdd = async () => {
+        const title = prompt('Enter post title');
+        const body = prompt('Enter post body');
+        if (title && body) {
+            const response = await axios.post('http://localhost:5000/posts', { title, body, userId: user.id });
+            setPosts([...posts, response.data]);
+        }
+    };
 
   const handleDeletePost = async (id) => {
     await axios.delete(`http://localhost:5000/posts/${id}`);
     setPosts(posts.filter(post => post.id !== id));
   };
 
-  const handleUpdatePost = async (id, updatedPost) => {
-    const response = await axios.put(`http://localhost:5000/posts/${id}`, updatedPost);
-    setPosts(posts.map(post => (post.id === id ? response.data : post)));
-  };
+    const handleUpdate = async (id) => {
+        const title = prompt('Enter new post title', posts.find(post => post.id === id).title);
+        const body = prompt('Enter new post body', posts.find(post => post.id === id).body);
+        if (title && body) {
+            const response = await axios.put(`http://localhost:5000/posts/${id}`, { ...posts.find(post => post.id === id), title, body });
+            setPosts(posts.map(post => (post.id === id ? response.data : post)));
+        }
+    };
 
-  const handleSelectPost = async (post) => {
-    setSelectedPost(post);
-    const response = await axios.get(`http://localhost:5000/comments?postId=${post.id}`);
-    setComments(response.data);
-  };
+    const handleAddComment = async () => {
+        const body = prompt('Enter comment');
+        if (body) {
+            const response = await axios.post('http://localhost:5000/comments', { body, postId: selectedPost.id, name: user.username, email: user.email });
+            setComments([...comments, response.data]);
+        }
+    };
 
-  const handleAddComment = async () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const response = await axios.post('http://localhost:5000/comments', {
-      postId: selectedPost.id,
-      name: user.name,
-      email: user.email,
-      body: newComment
-    });
-    setComments([...comments, response.data]);
-    setNewComment('');
-  };
 
-  const handleDeleteComment = async (id) => {
-    await axios.delete(`http://localhost:5000/comments/${id}`);
-    setComments(comments.filter(comment => comment.id !== id));
-  };
 
-  const handleUpdateComment = async (id, updatedComment) => {
-    const response = await axios.put(`http://localhost:5000/comments/${id}`, updatedComment);
-    setComments(comments.map(comment => (comment.id === id ? response.data : comment)));
-  };
+    const viewComments = () => { setCommentsOpen(!commentsOpen) };
 
-  const filteredPosts = posts.filter(post => 
-    post.title.includes(filter) || 
-    post.id.toString() === filter
-  );
+    const filteredPosts = posts.filter(post => search==='' || searchCriteria==="title"?  post.title.includes(search): post.id===search);
 
-  return (
-    <div>
-      <h1>Posts</h1>
-      <input 
-        type="text" 
-        placeholder="Filter posts..." 
-        value={filter} 
-        onChange={(e) => setFilter(e.target.value)} 
-      />
-      <div>
-        <input 
-          type="text" 
-          placeholder="Title" 
-          value={newPost.title} 
-          onChange={(e) => setNewPost({ ...newPost, title: e.target.value })} 
-        />
-        <textarea 
-          placeholder="Body" 
-          value={newPost.body} 
-          onChange={(e) => setNewPost({ ...newPost, body: e.target.value })} 
-        />
-        <button onClick={handleAddPost}>Add Post</button>
-      </div>
-      <ul>
-        {filteredPosts.map(post => (
-          <li key={post.id} onClick={() => handleSelectPost(post)}>
-            <span>{post.title}</span>
-            <button onClick={() => handleDeletePost(post.id)}>Delete</button>
-            <button onClick={() => handleUpdatePost(post.id, { ...post, title: 'Updated Title' })}>Update</button>
-          </li>
-        ))}
-      </ul>
-      {selectedPost && (
+    return (
         <div>
-          <h2>{selectedPost.title}</h2>
-          <p>{selectedPost.body}</p>
-          <h3>Comments</h3>
-          <ul>
-            {comments.map(comment => (
-              <li key={comment.id}>
-                <p>{comment.body}</p>
-                <p>By: {comment.name}</p>
-                <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
-                <button onClick={() => handleUpdateComment(comment.id, { ...comment, body: 'Updated Comment' })}>Update</button>
-              </li>
-            ))}
-          </ul>
-          <textarea 
-            placeholder="Add a comment..." 
-            value={newComment} 
-            onChange={(e) => setNewComment(e.target.value)} 
-          />
-          <button onClick={handleAddComment}>Add Comment</button>
+            <h1>Posts</h1>
+            <div>
+                <button onClick={handleAdd}>Add Post</button>
+                {/* <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search posts" /> */}
+            </div>
+            <div>
+            <label>Search By:</label>
+
+                <select onChange={(e) => setSearchCriteria(e.target.value)}>
+                    {/* <option value="">Search by</option> */}
+                    <option value="title">Title</option>
+                    <option value="id">Post Number</option>
+                </select>
+                <input
+                    type="text"
+                    placeholder="Search term"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
+                {/* <button onClick={handleSearch}>Search</button> */}
+            </div>
+            <ul>
+                {filteredPosts.map(post => (
+                    <li key={post.id} onClick={() => handleSelect(post)}>
+                        <label>{post.id} </label>{post.title}
+
+                        <button onClick={() => handleUpdate(post.id)}>Update</button>
+                        <button onClick={() => handleDelete(post.id)}>Delete</button>
+                    </li>
+                ))}
+            </ul>
+            {selectedPost && (
+                <div>
+                    <h2>{selectedPost.title}</h2>
+                    <p>{selectedPost.body}</p>
+                    <h3 onClick={viewComments}>{commentsOpen ? "Comments:" : "View Comments"}</h3>
+                    {commentsOpen && <ul>
+                        {comments.map(com => (
+                            <li key={com.id}><Comment comment={com} comments={comments} setComments={setComments}/></li>
+                        ))}
+                    </ul>}
+                    <button onClick={handleAddComment}>Add Comment</button>
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export default Posts;
