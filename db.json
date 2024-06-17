@@ -229,6 +229,29 @@
         "catchPhrase": "Centralized empowering task-force",
         "bs": "target end-to-end models"
       }
+    },
+    {
+      "id": "42b9",
+      "name": "Reut Tzipilevich",
+      "username": "abc",
+      "email": "reutzipi@gmail.com",
+      "address": {
+        "street": "fhtgfvgth",
+        "suite": "hjvhj",
+        "city": "neta",
+        "zipcode": "12345",
+        "geo": {
+          "lat": "jgvhggcvhg",
+          "lng": "bjghbvhg"
+        }
+      },
+      "phone": "0587418613",
+      "website": "123456",
+      "company": {
+        "name": "personal",
+        "catchPhrase": "vghvhg",
+        "bs": "gbjvh"
+      }
     }
   ],
   "todos": [

@@ -2,7 +2,6 @@
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
-import NavBar from "./components/NavBar";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import UserDetails from "./components/UserDetails";
@@ -19,14 +18,7 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route
-          path="/userdetails"
-          element={
-            <PrivateRoute>
-              <UserDetails />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/userdetails" element={<UserDetails />} />
         <Route
           path="/home"
           element={
