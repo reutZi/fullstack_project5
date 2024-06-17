@@ -1,6 +1,7 @@
 // src/components/Login.js
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
+import { NavLink } from 'react-router-dom';
 import axios from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -24,8 +25,6 @@ const Login = () => {
             if(!response.status === 200){
                 throw new Error('User name does not exist');
             }
-
-            console.log(response);
 
             const user = response.data[0];
 
@@ -54,6 +53,9 @@ const Login = () => {
                     {errors.password && <p>{errors.password.message}</p>}
                 </div>
                 <button type="submit">Login</button>
+                <p>
+                 Don't have an account? <NavLink to="/register">Sign up</NavLink>
+                </p>
             </form>
         </div>
     );

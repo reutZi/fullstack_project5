@@ -1,6 +1,7 @@
 // src/components/Todos.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Box, Typography, Button, TextField, Select, MenuItem, Checkbox, FormControlLabel } from '@mui/material';
 
 const Todos = () => {
     const [todos, setTodos] = useState([]);
@@ -51,29 +52,47 @@ const Todos = () => {
     });
 
     return (
-        <div>
-            <h1>Todos</h1>
-            <div>
-                <button onClick={handleAdd}>Add Todo</button>
-                <select value={criteria} onChange={(e) => setCriteria(e.target.value)}>
-                    <option value="serial">Serial</option>
-                    <option value="alphabetical">Alphabetical</option>
-                    <option value="execution">Execution Status</option>
-                </select>
-                <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search todos" />
-            </div>
-            <ul>
+        <Box sx={{ padding: 4 }}>
+            <Typography variant="h4" component="h1" gutterBottom>Todos</Typography>
+            <Box sx={{ display: 'flex', gap: 2, marginBottom: 4 }}>
+                <Button variant="contained" color="primary" onClick={handleAdd}>Add Todo</Button>
+                <Select
+                    value={criteria}
+                    onChange={(e) => setCriteria(e.target.value)}
+                    variant="outlined"
+                    sx={{ minWidth: 200 }}
+                >
+                    <MenuItem value="serial">Serial</MenuItem>
+                    <MenuItem value="alphabetical">Alphabetical</MenuItem>
+                    <MenuItem value="execution">Execution Status</MenuItem>
+                </Select>
+                <TextField
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search todos"
+                    variant="outlined"
+                />
+            </Box>
+            <Box component="ul" sx={{ listStyleType: 'none', padding: 0 }}>
                 {sortedTodos.map(todo => (
-                    <li key={todo.id}>
-                        <span onClick={() => handleToggle(todo.id)} style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
-                            {todo.title}
-                        </span>
-                        <button onClick={() => handleUpdate(todo.id)}>Update</button>
-                        <button onClick={() => handleDelete(todo.id)}>Delete</button>
-                    </li>
+                    <Box component="li" key={todo.id} sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: 2 }}>
+                        <FormControlLabel
+                            control={<Checkbox checked={todo.completed} onChange={() => handleToggle(todo.id)} />}
+                            label={
+                                <Typography
+                                    onClick={() => handleToggle(todo.id)}
+                                    sx={{ textDecoration: todo.completed ? 'line-through' : 'none', cursor: 'pointer' }}
+                                >
+                                    {todo.title}
+                                </Typography>
+                            }
+                        />
+                        <Button variant="contained" color="secondary" onClick={() => handleUpdate(todo.id)}>Update</Button>
+                        <Button variant="contained" color="error" onClick={() => handleDelete(todo.id)}>Delete</Button>
+                    </Box>
                 ))}
-            </ul>
-        </div>
+            </Box>
+        </Box>
     );
 };
 
