@@ -1,4 +1,3 @@
-// src/components/Posts.js
 import React, { useState, useEffect, useContext} from 'react';
 import axios from 'axios';
 import AuthContext from '../contexts/AuthContext';
@@ -16,8 +15,6 @@ const Posts = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [filteredPosts, setFilteredPosts] = useState([]);
     const { user } = useContext(AuthContext);
-
-
 
     useEffect(() => {
         const fetchPosts = async () => {

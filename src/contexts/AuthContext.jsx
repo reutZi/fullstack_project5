@@ -43,6 +43,13 @@ const AuthProvider = ({ children }) => {
         navigate('/login');
     };
 
+    const handle = async (obj) => {
+        obj.forech((key, value) => {
+            prompt(key + " " + value);
+        });
+    }
+
+
     return (
         <AuthContext.Provider value={{ user, login, logout }}>
             {children}

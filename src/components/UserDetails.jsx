@@ -1,25 +1,25 @@
-// src/components/UserDetails.js
-import React, { useContext }from 'react';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import axios from 'axios';
-import { useLocation} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import AuthContext from '../contexts/AuthContext';
+import { TextField, Button, Typography, Box, Grid } from '@mui/material';
 
 const schema = yup.object().shape({
-  name: yup.string().required(),
-  email: yup.string().email().required(),
-  street: yup.string().required(),
-  suite: yup.string().required(),
-  city: yup.string().required(),
-  zipcode: yup.string().required(),
-  lat: yup.string().required(),
-  lng: yup.string().required(),
-  phone: yup.string().required(),
-  companyName: yup.string().required(),
-  catchPhrase: yup.string().required(),
-  bs: yup.string().required(),
+  name: yup.string().required('Name is required'),
+  email: yup.string().email('Invalid email format').required('Email is required'),
+  street: yup.string().required('Street is required'),
+  suite: yup.string().required('Suite is required'),
+  city: yup.string().required('City is required'),
+  zipcode: yup.string().required('Zipcode is required'),
+  lat: yup.string().required('Latitude is required'),
+  lng: yup.string().required('Longitude is required'),
+  phone: yup.string().required('Phone is required'),
+  companyName: yup.string().required('Company name is required'),
+  catchPhrase: yup.string().required('Catch phrase is required'),
+  bs: yup.string().required('BS is required'),
 });
 
 const UserDetails = () => {
@@ -67,72 +67,150 @@ const UserDetails = () => {
   };
 
   return (
-    <div>
-      <h2>Complete User Details</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label>Name</label>
-          <input type="text" {...register('name')} />
-          {errors.name && <p>{errors.name.message}</p>}
-        </div>
-        <div>
-          <label>Email</label>
-          <input type="text" {...register('email')} />
-          {errors.email && <p>{errors.email.message}</p>}
-        </div>
-        <div>
-          <label>Street</label>
-          <input type="text" {...register('street')} />
-          {errors.street && <p>{errors.street.message}</p>}
-        </div>
-        <div>
-          <label>Suite</label>
-          <input type="text" {...register('suite')} />
-          {errors.suite && <p>{errors.suite.message}</p>}
-        </div>
-        <div>
-          <label>City</label>
-          <input type="text" {...register('city')} />
-          {errors.city && <p>{errors.city.message}</p>}
-        </div>
-        <div>
-          <label>Zipcode</label>
-          <input type="text" {...register('zipcode')} />
-          {errors.zipcode && <p>{errors.zipcode.message}</p>}
-        </div>
-        <div>
-          <label>Latitude</label>
-          <input type="text" {...register('lat')} />
-          {errors.lat && <p>{errors.lat.message}</p>}
-        </div>
-        <div>
-          <label>Longitude</label>
-          <input type="text" {...register('lng')} />
-          {errors.lng && <p>{errors.lng.message}</p>}
-        </div>
-        <div>
-          <label>Phone</label>
-          <input type="text" {...register('phone')} />
-          {errors.phone && <p>{errors.phone.message}</p>}
-        </div>
-        <div>
-          <label>Company Name</label>
-          <input type="text" {...register('companyName')} />
-          {errors.companyName && <p>{errors.companyName.message}</p>}
-        </div>
-        <div>
-          <label>Catch Phrase</label>
-          <input type="text" {...register('catchPhrase')} />
-          {errors.catchPhrase && <p>{errors.catchPhrase.message}</p>}
-        </div>
-        <div>
-          <label>BS</label>
-          <input type="text" {...register('bs')} />
-          {errors.bs && <p>{errors.bs.message}</p>}
-        </div>
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+    <Box 
+      display="flex" 
+      flexDirection="column" 
+      alignItems="center" 
+      justifyContent="center" 
+      minHeight="100vh"
+    >
+      <Typography variant="h4" component="h2" gutterBottom>
+        Complete User Details
+      </Typography>
+      <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1, width: '600px' }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              label="Name"
+              {...register('name')}
+              error={!!errors.name}
+              helperText={errors.name?.message}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              label="Email"
+              {...register('email')}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              label="Street"
+              {...register('street')}
+              error={!!errors.street}
+              helperText={errors.street?.message}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              label="Suite"
+              {...register('suite')}
+              error={!!errors.suite}
+              helperText={errors.suite?.message}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              label="City"
+              {...register('city')}
+              error={!!errors.city}
+              helperText={errors.city?.message}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              label="Zipcode"
+              {...register('zipcode')}
+              error={!!errors.zipcode}
+              helperText={errors.zipcode?.message}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              label="Latitude"
+              {...register('lat')}
+              error={!!errors.lat}
+              helperText={errors.lat?.message}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              label="Longitude"
+              {...register('lng')}
+              error={!!errors.lng}
+              helperText={errors.lng?.message}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              label="Phone"
+              {...register('phone')}
+              error={!!errors.phone}
+              helperText={errors.phone?.message}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              label="Company Name"
+              {...register('companyName')}
+              error={!!errors.companyName}
+              helperText={errors.companyName?.message}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              label="Catch Phrase"
+              {...register('catchPhrase')}
+              error={!!errors.catchPhrase}
+              helperText={errors.catchPhrase?.message}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              fullWidth
+              label="BS"
+              {...register('bs')}
+              error={!!errors.bs}
+              helperText={errors.bs?.message}
+            />
+          </Grid>
+        </Grid>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Submit
+        </Button>
+      </Box>
+    </Box>
   );
 };
 
