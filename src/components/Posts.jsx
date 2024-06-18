@@ -3,7 +3,8 @@ import React, { useState, useEffect, useContext} from 'react';
 import axios from 'axios';
 import AuthContext from '../contexts/AuthContext';
 import Comment from './Comment';
-import { useForm } from 'react-hook-form';
+import Search from './Search';
+import { set, useForm } from 'react-hook-form';
 
 const Posts = () => {
     const [posts, setPosts] = useState([]);
@@ -12,7 +13,8 @@ const Posts = () => {
     const [search, setSearch] = useState('');
     const [commentsOpen, setCommentsOpen] = useState(false);
     const [searchCriteria, setSearchCriteria] = useState('title');
-
+    const [isLoading, setIsLoading] = useState(true);
+    const [filteredPosts, setFilteredPosts] = useState([]);
     const { user } = useContext(AuthContext);
 
 
@@ -23,6 +25,7 @@ const Posts = () => {
             setPosts(response.data);
         };
         fetchPosts();
+        setIsLoading(false);
     }, []);
 
     const handleSelect = async (post) => {
@@ -67,20 +70,24 @@ const Posts = () => {
 
     const viewComments = () => { setCommentsOpen(!commentsOpen) };
 
-    const filteredPosts = posts.filter(post => search==='' || searchCriteria==="title"?  post.title.includes(search): post.id===search);
+    //const filteredPosts = posts.filter(post => search==='' || searchCriteria==="title"?  post.title.includes(search): post.id===search);
+
+
+    if (isLoading) return <h1>Loading...</h1>;
 
     return (
         <div>
             <h1>Posts</h1>
             <div>
                 <button onClick={handleAdd}>Add Post</button>
+                {<Search features={[["title","Title"], ["id","Post Number"]]} list={posts} setFilteredList={setFilteredPosts}/>}
                 {/* <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search posts" /> */}
             </div>
-            <div>
+            {/* <div>
             <label>Search By:</label>
 
                 <select onChange={(e) => setSearchCriteria(e.target.value)}>
-                    {/* <option value="">Search by</option> */}
+                   
                     <option value="title">Title</option>
                     <option value="id">Post Number</option>
                 </select>
@@ -90,8 +97,7 @@ const Posts = () => {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
-                {/* <button onClick={handleSearch}>Search</button> */}
-            </div>
+            </div> */}
             <ul>
                 {filteredPosts.map(post => (
                     <li key={post.id} onClick={() => handleSelect(post)}>
