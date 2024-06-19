@@ -7,6 +7,8 @@ import * as yup from 'yup';
 import { TextField, Button, Typography, Box, Link } from '@mui/material';
 import AuthContext from '../contexts/AuthContext';
 
+const API_URL = 'http://localhost:5000/users';
+
 const schema = yup.object().shape({
     userName: yup.string().required('Username is required'),
     password: yup.string().min(4, 'Password must be at least 4 characters').required('Password is required'),
@@ -20,7 +22,7 @@ const Login = () => {
 
     const onSubmit = async (data) => {
         try {
-            const response = await axios.get(`http://localhost:5000/users?username=${data.userName}`);
+            const response = await axios.get(`${API_URL}?username=${data.userName}`);
 
             if (!response.status === 200) {
                 throw new Error('Username does not exist');

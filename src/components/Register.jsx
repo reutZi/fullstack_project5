@@ -6,6 +6,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { TextField, Button, Typography, Box, Link } from '@mui/material';
 
+const API_URL = 'http://localhost:5000/users';
+
 const schema = yup.object().shape({
     username: yup.string().required('Username is required'),
     password: yup.string().required('Password is required'),
@@ -21,7 +23,7 @@ const Register = () => {
 
     const onSubmit = async (data) => {
         try {
-            const response = await axios.get(`http://localhost:5000/users?username=${data.username}`);
+            const response = await axios.get(`${API_URL}?username=${data.username}`);
             if (response.data.length > 0) {
                 alert('Username already exists');
             } else {

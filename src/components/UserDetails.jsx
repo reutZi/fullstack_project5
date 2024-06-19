@@ -7,6 +7,8 @@ import { useLocation } from 'react-router-dom';
 import AuthContext from '../contexts/AuthContext';
 import { TextField, Button, Typography, Box, Grid } from '@mui/material';
 
+const API_URL = 'http://localhost:5000/users';
+
 const schema = yup.object().shape({
   name: yup.string().required('Name is required'),
   email: yup.string().email('Invalid email format').required('Email is required'),
@@ -59,7 +61,7 @@ const UserDetails = () => {
           bs: data.bs,
         },
       };
-      await axios.post('http://localhost:5000/users', newUser);
+      await axios.post(`${API_URL}`, newUser);
       login(newUser.username);
     } catch (error) {
       console.error(error);

@@ -1,47 +1,47 @@
 // src/components/Albums.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import Photos from "./Photos";
+import AuthContext from '../contexts/AuthContext';
+
+const API_URL = 'http://localhost:5000/albums';
 
 const Albums = () => {
     const [albums, setAlbums] = useState([]);
     const [selectedAlbum, setSelectedAlbum] = useState(null);
-    const [photos, setPhotos] = useState([]);
     const [search, setSearch] = useState('');
+    const user = useContext(AuthContext);
+
+    const fetchAlbums = async () => {
+        const response = await axios.get(`${API_URL}?userId=${user.id}`);
+        setAlbums(response.data);
+    };
 
     useEffect(() => {
-        const fetchAlbums = async () => {
-            const user = JSON.parse(localStorage.getItem('user'));
-            const response = await axios.get(`http://localhost:5000/albums?userId=${user.id}`);
-            setAlbums(response.data);
-        };
         fetchAlbums();
     }, []);
 
     const handleSelect = async (album) => {
         setSelectedAlbum(album);
-        const response = await axios.get(`http://localhost:5000/photos?albumId=${album.id}`);
-        setPhotos(response.data);
     };
 
     const handleAdd = async () => {
         const title = prompt('Enter album title');
         if (title) {
-            const user = JSON.parse(localStorage.getItem('user'));
-            const response = await axios.post('http://localhost:5000/albums', { title, userId: user.id });
+            const response = await axios.post(`${API_URL}`, { title, userId: user.id });
             setAlbums([...albums, response.data]);
         }
     };
 
     const handleDelete = async (id) => {
-        await axios.delete(`http://localhost:5000/albums/${id}`);
+        await axios.delete(`${API_URL}/${id}`);
         setAlbums(albums.filter(album => album.id !== id));
     };
 
     const handleUpdate = async (id) => {
         const title = prompt('Enter new album title');
         if (title) {
-            const response = await axios.put(`http://localhost:5000/albums/${id}`, { ...albums.find(album => album.id === id), title });
+            const response = await axios.put(`${API_URL}/${id}`, { ...albums.find(album => album.id === id), title });
             setAlbums(albums.map(album => (album.id === id ? response.data : album)));
         }
     };
@@ -52,22 +52,11 @@ const Albums = () => {
         const thumbnailUrl = prompt('Enter thumbnail URL');
         if (title && url && thumbnailUrl) {
             const response = await axios.post('http://localhost:5000/photos', { title, url, thumbnailUrl, albumId: selectedAlbum.id });
-            setPhotos([...photos, response.data]);
-        }
-    };
-
-    const handleDeletePhoto = async (id) => {
-        await axios.delete(`http://localhost:5000/photos/${id}`);
-        setPhotos(photos.filter(photo => photo.id !== id));
-    };
-
-    const handleUpdatePhoto = async (id) => {
-        const title = prompt('Enter new photo title');
-        const url = prompt('Enter new photo URL');
-        const thumbnailUrl = prompt('Enter new thumbnail URL');
-        if (title && url && thumbnailUrl) {
-            const response = await axios.put(`http://localhost:5000/photos/${id}`, { ...photos.find(photo => photo.id === id), title, url, thumbnailUrl });
-            setPhotos(photos.map(photo => (photo.id === id ? response.data : photo)));
+            if (response.status === 201) {
+                alert('Photo added successfully');
+            }else{
+                alert('Failed to add photo');
+            }
         }
     };
 

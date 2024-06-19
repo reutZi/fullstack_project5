@@ -6,6 +6,8 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+const API_URL = 'http://localhost:5000/todos';
+
 const Todos = () => {
     const [todos, setTodos] = useState([]);
     const [criteria, setCriteria] = useState('serial');
@@ -13,7 +15,7 @@ const Todos = () => {
 
     useEffect(() => {
         const fetchTodos = async () => {
-            const response = await axios.get('http://localhost:5000/todos');
+            const response = await axios.get(`${API_URL}`);
             setTodos(response.data);
         };
         fetchTodos();
@@ -22,13 +24,13 @@ const Todos = () => {
     const handleAdd = async () => {
         const title = prompt('Enter todo title');
         if (title) {
-            const response = await axios.post('http://localhost:5000/todos', { title, completed: false });
+            const response = await axios.post(`${API_URL}`, { title, completed: false });
             setTodos([...todos, response.data]);
         }
     };
 
     const handleDelete = async (id) => {
-        await axios.delete(`http://localhost:5000/todos/${id}`);
+        await axios.delete(`${API_URL}/${id}`);
         setTodos(todos.filter(todo => todo.id !== id));
     };
 
@@ -36,14 +38,14 @@ const Todos = () => {
         let todo = todos.find(todo => todo.id === id);
         const title = prompt("Update the ToDo", todo.title);
         if (title) {
-            const response = await axios.put(`http://localhost:5000/todos/${id}`, { ...todos.find(todo => todo.id === id), title });
+            const response = await axios.put(`${API_URL}/${id}`, { ...todos.find(todo => todo.id === id), title });
             setTodos(todos.map(todo => (todo.id === id ? response.data : todo)));
         }
     };
 
     const handleToggle = async (id) => {
         const todo = todos.find(todo => todo.id === id);
-        const response = await axios.put(`http://localhost:5000/todos/${id}`, { ...todo, completed: !todo.completed });
+        const response = await axios.put(`${API_URL}/${id}`, { ...todo, completed: !todo.completed });
         setTodos(todos.map(todo => (todo.id === id ? response.data : todo)));
     };
 
