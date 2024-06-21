@@ -70,9 +70,7 @@ const Albums = () => {
                 {filteredAlbums.map(album => (
                     <li key={album.id} className="list-item" onClick={() => handleSelect(album.id)}>
                         <div>
-                            <strong>{album.title}</strong>
-                            <br />
-                            ID: {album.id}
+                            <strong>{album.id +'. ' + album.title}</strong>
                         </div>
                         <div>
                             <button className="icon-button" onClick={() => handleUpdate(album.id)}>

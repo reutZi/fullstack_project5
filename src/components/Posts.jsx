@@ -82,9 +82,7 @@ const Posts = () => {
                 {filteredPosts.map(post => (
                     <li key={post.id} className="list-item" onClick={() => handleSelect(post)}>
                         <div>
-                            <strong>{post.title}</strong>
-                            <br />
-                            ID: {post.id}
+                            <strong>{post.id +'. ' + post.title}</strong>
                         </div>
                         <div>
                             <button className="icon-button" onClick={() => handleUpdate(post.id)}>
