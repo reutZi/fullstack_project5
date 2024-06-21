@@ -1,9 +1,23 @@
 // src/contexts/AuthContext.jsx
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const AuthContext = createContext();
+const UserContext = createContext();
+const LoginContext = createContext();
+const LogoutContext = createContext();
+
+export function useUser() {
+    return useContext(UserContext);
+}
+
+export function useLogin() {
+    return useContext(LoginContext);
+}
+
+export function useLogout() {
+    return useContext(LogoutContext);
+}
 
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
@@ -23,7 +37,7 @@ const AuthProvider = ({ children }) => {
         try {
             const response = await axios.get(`http://localhost:5000/users?username=${userName}`);
             const user = response.data[0];
-    
+
             if (user) {
                 localStorage.setItem('user', JSON.stringify(user));
                 setUser(user);
@@ -43,19 +57,16 @@ const AuthProvider = ({ children }) => {
         navigate('/login');
     };
 
-    const handle = async (obj) => {
-        obj.forech((key, value) => {
-            prompt(key + " " + value);
-        });
-    }
-
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
-            {children}
-        </AuthContext.Provider>
+        <UserContext.Provider value={user}>
+        <LoginContext.Provider value={login}>
+            <LogoutContext.Provider value={logout}>
+                {children}
+            </LogoutContext.Provider>
+        </LoginContext.Provider>
+    </UserContext.Provider>
     );
 };
 
-export { AuthProvider };
-export default AuthContext;
+export default AuthProvider;

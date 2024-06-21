@@ -1,34 +1,42 @@
-// src/components/Albums.js
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Photos from "./Photos";
-import AuthContext from '../contexts/AuthContext';
+import { useUser } from '../contexts/AuthContext';
+import Search from './Search';
+import { useNavigate } from 'react-router-dom';
+import { AddIcon, DeleteIcon, EditIcon } from './Icons';
+import '../styles.css';
 
 const API_URL = 'http://localhost:5000/albums';
 
 const Albums = () => {
     const [albums, setAlbums] = useState([]);
-    const [selectedAlbum, setSelectedAlbum] = useState(null);
-    const [search, setSearch] = useState('');
-    const user = useContext(AuthContext);
-
-    const fetchAlbums = async () => {
-        const response = await axios.get(`${API_URL}?userId=${user.id}`);
-        setAlbums(response.data);
-    };
+    const [filteredAlbums, setFilteredAlbums] = useState([]);
+    const user = useUser();
+    const navigate = useNavigate();
 
     useEffect(() => {
+        const fetchAlbums = async () => {
+            if (user) {
+                try {
+                    const response = await axios.get(`${API_URL}?userId=${user.id}`);
+                    setAlbums(response.data);
+                    setFilteredAlbums(response.data);
+                } catch (error) {
+                    console.error('Error fetching albums:', error);
+                }
+            }
+        };
         fetchAlbums();
-    }, []);
+    }, [user]);
 
-    const handleSelect = async (album) => {
-        setSelectedAlbum(album);
+    const handleSelect = (albumId) => {
+        navigate(`/albums/${albumId}/photos`);
     };
 
     const handleAdd = async () => {
         const title = prompt('Enter album title');
         if (title) {
-            const response = await axios.post(`${API_URL}`, { title, userId: user.id });
+            const response = await axios.post(API_URL, { title, userId: user.id });
             setAlbums([...albums, response.data]);
         }
     };
@@ -39,53 +47,44 @@ const Albums = () => {
     };
 
     const handleUpdate = async (id) => {
-        const title = prompt('Enter new album title');
+        const title = prompt('Enter new album title', albums.find(album => album.id === id).title);
         if (title) {
-            const response = await axios.put(`${API_URL}/${id}`, { ...albums.find(album => album.id === id), title });
+            const response = await axios.put(`${API_URL}/${id}`, { title });
             setAlbums(albums.map(album => (album.id === id ? response.data : album)));
         }
     };
 
-    const handleAddPhoto = async () => {
-        const title = prompt('Enter photo title');
-        const url = prompt('Enter photo URL');
-        const thumbnailUrl = prompt('Enter thumbnail URL');
-        if (title && url && thumbnailUrl) {
-            const response = await axios.post('http://localhost:5000/photos', { title, url, thumbnailUrl, albumId: selectedAlbum.id });
-            if (response.status === 201) {
-                alert('Photo added successfully');
-            }else{
-                alert('Failed to add photo');
-            }
-        }
-    };
-
-    const filteredAlbums = albums.filter(album => album.title.includes(search));
-
     return (
-        <div>
-            <h1>Albums</h1>
-            <div>
-                <button onClick={handleAdd}>Add Album</button>
-                <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search albums" />
+        <div className="container">
+            <div className="header">
+                <h1 className="title">Albums</h1>
+                <div className="flex-container">
+                    <Search features={[["title", "Title"], ["id", "Album Number"]]} list={albums} setFilteredList={setFilteredAlbums} />
+                    <button className="button" onClick={handleAdd}>
+                        <AddIcon />
+                        Add Album
+                    </button>
+                </div>
             </div>
-            <ul>
+            <ul className="list">
                 {filteredAlbums.map(album => (
-                    <li key={album.id} onClick={() => handleSelect(album)}>
-                        {album.title}
-                        <button onClick={() => handleUpdate(album.id)}>Update</button>
-                        <button onClick={() => handleDelete(album.id)}>Delete</button>
+                    <li key={album.id} className="list-item" onClick={() => handleSelect(album.id)}>
+                        <div>
+                            <strong>{album.title}</strong>
+                            <br />
+                            ID: {album.id}
+                        </div>
+                        <div>
+                            <button className="icon-button" onClick={() => handleUpdate(album.id)}>
+                                <EditIcon />
+                            </button>
+                            <button className="icon-button" onClick={() => handleDelete(album.id)}>
+                                <DeleteIcon />
+                            </button>
+                        </div>
                     </li>
                 ))}
             </ul>
-            {selectedAlbum && (
-                <div>
-                    <h2>{selectedAlbum.title}</h2>
-                    <h3>Photos</h3>
-                    <Photos albumId={selectedAlbum.id}/>
-                    <button onClick={handleAddPhoto}>Add Photo</button>
-                </div>
-            )}
         </div>
     );
 };

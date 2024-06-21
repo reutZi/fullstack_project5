@@ -1,7 +1,7 @@
 // src/App.js
 import React from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
+import AuthProvider from "./contexts/AuthContext";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import UserDetails from "./components/UserDetails";
@@ -11,6 +11,7 @@ import Posts from "./components/Posts";
 import Albums from "./components/Albums";
 import Info from "./components/Info";
 import PrivateRoute from "./components/PrivateRoute";
+import PhotosPage from "./components/PhotosPage";
 
 const App = () => {
   return (
@@ -32,6 +33,14 @@ const App = () => {
           element={
             <PrivateRoute>
               <Todos />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/albums/:albumId/photos"
+          element={
+            <PrivateRoute>
+              <PhotosPage />
             </PrivateRoute>
           }
         />
