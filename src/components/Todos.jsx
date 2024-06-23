@@ -21,11 +21,6 @@ const Todos = () => {
         fetchTodos();
     }, []);
 
-    // useEffect(() => {
-    //     sortedTodos();
-    // }, [todos]);
-
-
     const handleAdd = async () => {
         const title = prompt('Enter todo title');
         if (title) {
