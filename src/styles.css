@@ -20,6 +20,10 @@ body {
     font-size: 2rem;
 }
 
+.search-select .placeholder {
+    color: #999;
+}
+
 .button {
     margin-left: 10px;
     background-color: #3f51b5;

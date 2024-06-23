@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import '../styles.css';
 
 function Search({ features, list, setFilteredList }) {
     const [search, setSearch] = useState('');
     const [searchCriteria, setSearchCriteria] = useState(features[0][0]);
+    const inputRef = useRef(null);
 
     useEffect(() => {
         filterList(search);
-    }, [list, searchCriteria, search]);
+    }, [list, search, searchCriteria]);
 
     const filterList = (val) => {
         setSearch(val);
@@ -17,7 +18,7 @@ function Search({ features, list, setFilteredList }) {
             } else if (searchCriteria === "unchecked") {
                 return item.completed === false;
             } else if (searchCriteria === "id") {
-                return item.id === Number(val);
+                return item.id.includes(val);
             } else {
                 return search === '' || item[searchCriteria].toLowerCase().includes(val.toLowerCase());
             }
@@ -25,11 +26,17 @@ function Search({ features, list, setFilteredList }) {
         setFilteredList(temp);
     }
 
+    const handleCriteriaChange = (e) => {
+        setSearchCriteria(e.target.value);
+        setSearch(''); // Clear the search input
+        inputRef.current.focus(); // Focus on the text field
+    };
+
     return (
         <div className="search-container">
             <select
                 value={searchCriteria}
-                onChange={(e) => setSearchCriteria(e.target.value)}
+                onChange={handleCriteriaChange}
                 className="search-select"
             >
                 {features.map(([feature, name], index) => (
@@ -43,6 +50,7 @@ function Search({ features, list, setFilteredList }) {
                 onChange={(e) => filterList(e.target.value)}
                 className="search-input"
                 disabled={searchCriteria === "checked" || searchCriteria === "unchecked"}
+                ref={inputRef}
             />
         </div>
     );
