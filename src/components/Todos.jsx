@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {
-    Box, Typography, Button, TextField, Select, MenuItem, Checkbox, FormControlLabel, IconButton
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { useUser } from '../contexts/AuthContext';
+import Search from './Search';
+import { AddIcon, DeleteIcon, EditIcon } from './Icons';
+import '../styles.css';
 
 const API_URL = 'http://localhost:5000/todos';
 
 const Todos = () => {
     const [todos, setTodos] = useState([]);
+    const [filteredTodos, setFilteredTodos] = useState([]);
     const [criteria, setCriteria] = useState('serial');
-    const [search, setSearch] = useState('');
+    const user = useUser();
 
     useEffect(() => {
         const fetchTodos = async () => {
-            const response = await axios.get(`${API_URL}`);
+            const response = await axios.get(`${API_URL}?userId=${user.id}`);
             setTodos(response.data);
         };
         fetchTodos();
@@ -24,7 +24,7 @@ const Todos = () => {
     const handleAdd = async () => {
         const title = prompt('Enter todo title');
         if (title) {
-            const response = await axios.post(`${API_URL}`, { title, completed: false });
+            const response = await axios.post(`${API_URL}`, { title, completed: false, userId: user.id });
             setTodos([...todos, response.data]);
         }
     };
@@ -49,7 +49,6 @@ const Todos = () => {
         setTodos(todos.map(todo => (todo.id === id ? response.data : todo)));
     };
 
-    const filteredTodos = todos.filter(todo => todo.title.includes(search));
     const sortedTodos = filteredTodos.sort((a, b) => {
         if (criteria === 'serial') return a.id - b.id;
         if (criteria === 'alphabetical') return a.title.localeCompare(b.title);
@@ -58,51 +57,47 @@ const Todos = () => {
     });
 
     return (
-        <Box sx={{ padding: 4 }}>
-            <Typography variant="h4" component="h1" gutterBottom>Todos</Typography>
-            <Box sx={{ display: 'flex', gap: 2, marginBottom: 4 }}>
-                <Button variant="contained" color="primary" onClick={handleAdd}>Add Todo</Button>
-                <Select
-                    value={criteria}
-                    onChange={(e) => setCriteria(e.target.value)}
-                    variant="outlined"
-                    sx={{ minWidth: 200 }}
-                >
-                    <MenuItem value="serial">Serial</MenuItem>
-                    <MenuItem value="alphabetical">Alphabetical</MenuItem>
-                    <MenuItem value="execution">Execution Status</MenuItem>
-                </Select>
-                <TextField
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search todos"
-                    variant="outlined"
-                />
-            </Box>
-            <Box component="ul" sx={{ listStyleType: 'none', padding: 0 }}>
+        <div className="container">
+            <div className="header">
+                <h1 className="title">Todos</h1>
+                <div className="flex-container">
+                    <Search features={[["title", "Title"], ["id", "ToDo Number"], ["checked", "Completed"], ["unchecked", "Not Completed"]]} list={todos} setFilteredList={setFilteredTodos} />
+                    <select
+                        value={criteria}
+                        onChange={(e) => setCriteria(e.target.value)}
+                        className="search-select"
+                    >
+                        <option value="serial">Serial</option>
+                        <option value="alphabetical">Alphabetical</option>
+                        <option value="execution">Execution Status</option>
+                    </select>
+                    <button className="button" onClick={handleAdd}>
+                        <AddIcon />
+                        Add Todo
+                    </button>
+                </div>
+            </div>
+            <ul className="list">
                 {sortedTodos.map(todo => (
-                    <Box component="li" key={todo.id} sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: 2 }}>
-                        <IconButton color="secondary" onClick={() => handleUpdate(todo.id)}>
-                            <EditIcon />
-                        </IconButton>
-                        <IconButton color="error" onClick={() => handleDelete(todo.id)}>
-                            <DeleteIcon />
-                        </IconButton>
-                        <FormControlLabel
-                            control={<Checkbox checked={todo.completed} onChange={() => handleToggle(todo.id)} />}
-                            label={
-                                <Typography
-                                    onClick={() => handleToggle(todo.id)}
-                                    sx={{ textDecoration: todo.completed ? 'line-through' : 'none', cursor: 'pointer' }}
-                                >
-                                    {todo.title}
-                                </Typography>
-                            }
-                        />
-                    </Box>
+                    <li key={todo.id} className="list-item">
+                        <label>
+                            <input type="checkbox" checked={todo.completed} onChange={() => handleToggle(todo.id)} />
+                            <span style={{ textDecoration: todo.completed ? 'line-through' : 'none', cursor: 'pointer' }}>
+                                {todo.id + '.  ' + todo.title}
+                            </span>
+                        </label>
+                        <div>
+                            <button className="icon-button" onClick={() => handleUpdate(todo.id)}>
+                                <EditIcon />
+                            </button>
+                            <button className="icon-button" onClick={() => handleDelete(todo.id)}>
+                                <DeleteIcon />
+                            </button>
+                        </div>
+                    </li>
                 ))}
-            </Box>
-        </Box>
+            </ul>
+        </div>
     );
 };
 

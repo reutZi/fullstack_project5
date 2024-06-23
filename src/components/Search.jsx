@@ -1,47 +1,51 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import AuthContext from '../contexts/AuthContext';
-import Comment from './Comment';
-import { useForm } from 'react-hook-form';
-
+import React, { useState, useEffect } from 'react';
+import '../styles.css';
 
 function Search({ features, list, setFilteredList }) {
-
     const [search, setSearch] = useState('');
     const [searchCriteria, setSearchCriteria] = useState(features[0][0]);
 
-
     useEffect(() => {
-        console.log('list: ', list);
         filterList(search);
     }, [list, searchCriteria, search]);
 
     const filterList = (val) => {
-
         setSearch(val);
-        var temp = list.filter(
-            item => search === '' ||
-                (searchCriteria === "id" ? item.id === search : item[searchCriteria].toLowerCase().includes(search?.toLowerCase())));
+        const temp = list.filter(item => {
+            if (searchCriteria === "checked") {
+                return item.completed === true;
+            } else if (searchCriteria === "unchecked") {
+                return item.completed === false;
+            } else if (searchCriteria === "id") {
+                return item.id === Number(val);
+            } else {
+                return search === '' || item[searchCriteria].toLowerCase().includes(val.toLowerCase());
+            }
+        });
         setFilteredList(temp);
     }
 
     return (
-        <div>
-            <label>Search By:</label>
-
-            <select onChange={(e) => setSearchCriteria(e.target.value)}>
-                {features.map(([feature, name], index) => (<option key={index} value={feature}>{name}</option>))}
+        <div className="search-container">
+            <select
+                value={searchCriteria}
+                onChange={(e) => setSearchCriteria(e.target.value)}
+                className="search-select"
+            >
+                {features.map(([feature, name], index) => (
+                    <option key={index} value={feature}>{name}</option>
+                ))}
             </select>
             <input
                 type="text"
                 placeholder="Search term"
                 value={search}
                 onChange={(e) => filterList(e.target.value)}
-
-            // onChange={(e) => setSearch(e.target.value)}
+                className="search-input"
+                disabled={searchCriteria === "checked" || searchCriteria === "unchecked"}
             />
         </div>
-    )
-
+    );
 }
+
 export default Search;

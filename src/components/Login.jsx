@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
-import { NavLink } from 'react-router-dom';
 import axios from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { TextField, Button, Typography, Box, Link } from '@mui/material';
-import AuthContext from '../contexts/AuthContext';
+import { NavLink } from 'react-router-dom';
+import { useLogin } from '../contexts/AuthContext';
+import '../styles.css';
 
 const API_URL = 'http://localhost:5000/users';
 
@@ -15,7 +15,7 @@ const schema = yup.object().shape({
 });
 
 const Login = () => {
-    const { login } = useContext(AuthContext);
+    const login = useLogin();
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(schema),
     });
@@ -41,52 +41,31 @@ const Login = () => {
     };
 
     return (
-        <Box 
-            display="flex" 
-            flexDirection="column" 
-            alignItems="center" 
-            justifyContent="center" 
-            minHeight="100vh"
-        >
-            <Typography variant="h4" component="h2" gutterBottom>
-                Login
-            </Typography>
-            <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1, width: '300px' }}>
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
+        <div className="form-container">
+            <h2>Login</h2>
+            <form className="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+                <input
+                    type="text"
                     id="userName"
-                    label="Username"
+                    placeholder="Username"
                     {...register('userName')}
-                    error={!!errors.userName}
-                    helperText={errors.userName?.message}
+                    className={`input ${errors.userName ? 'input-error' : ''}`}
                 />
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    id="password"
-                    label="Password"
+                {errors.userName && <p>{errors.userName.message}</p>}
+                <input
                     type="password"
+                    id="password"
+                    placeholder="Password"
                     {...register('password')}
-                    error={!!errors.password}
-                    helperText={errors.password?.message}
+                    className={`input ${errors.password ? 'input-error' : ''}`}
                 />
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    sx={{ mt: 3, mb: 2 }}
-                >
-                    Login
-                </Button>
-                <Typography variant="body2" align="center">
-                    Don't have an account? <Link component={NavLink} to="/register">Sign up</Link>
-                </Typography>
-            </Box>
-        </Box>
+                {errors.password && <p>{errors.password.message}</p>}
+                <button type="submit" className="button">Login</button>
+                <p>
+                    Don't have an account? <NavLink to="/register">Sign up</NavLink>
+                </p>
+            </form>
+        </div>
     );
 };
 

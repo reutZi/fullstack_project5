@@ -1,10 +1,10 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import axios from 'axios';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { NavLink, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { TextField, Button, Typography, Box, Link } from '@mui/material';
+import '../styles.css';
 
 const API_URL = 'http://localhost:5000/users';
 
@@ -35,63 +35,39 @@ const Register = () => {
     };
 
     return (
-        <Box 
-            display="flex" 
-            flexDirection="column" 
-            alignItems="center" 
-            justifyContent="center" 
-            minHeight="100vh"
-        >
-            <Typography variant="h4" component="h2" gutterBottom>
-                Sign Up
-            </Typography>
-            <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1, width: '300px' }}>
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
+        <div className="form-container">
+            <h2>Sign Up</h2>
+            <form className="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+                <input
+                    type="text"
                     id="username"
-                    label="Username"
+                    placeholder="Username"
                     {...register('username')}
-                    error={!!errors.username}
-                    helperText={errors.username?.message}
+                    className={`input ${errors.username ? 'input-error' : ''}`}
                 />
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
+                {errors.username && <p>{errors.username.message}</p>}
+                <input
+                    type="password"
                     id="password"
-                    label="Password"
-                    type="password"
+                    placeholder="Password"
                     {...register('password')}
-                    error={!!errors.password}
-                    helperText={errors.password?.message}
+                    className={`input ${errors.password ? 'input-error' : ''}`}
                 />
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    id="verifyPassword"
-                    label="Verify Password"
+                {errors.password && <p>{errors.password.message}</p>}
+                <input
                     type="password"
+                    id="verifyPassword"
+                    placeholder="Verify Password"
                     {...register('verifyPassword')}
-                    error={!!errors.verifyPassword}
-                    helperText={errors.verifyPassword?.message}
+                    className={`input ${errors.verifyPassword ? 'input-error' : ''}`}
                 />
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    sx={{ mt: 3, mb: 2 }}
-                >
-                    Register
-                </Button>
-                <Typography variant="body2" align="center">
-                    Already have an account? <Link component={NavLink} to="/login">Login</Link>
-                </Typography>
-            </Box>
-        </Box>
+                {errors.verifyPassword && <p>{errors.verifyPassword.message}</p>}
+                <button type="submit" className="button">Register</button>
+                <p>
+                    Already have an account? <NavLink to="/login">Login</NavLink>
+                </p>
+            </form>
+        </div>
     );
 };
 

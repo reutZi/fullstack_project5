@@ -1,20 +1,19 @@
-import React, { useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import AuthContext from '../contexts/AuthContext';
+import { useUser } from '../contexts/AuthContext';
 import Comment from './Comment';
 import Search from './Search';
-import { set, useForm } from 'react-hook-form';
+import { AddIcon, DeleteIcon, EditIcon, CommentIcon } from './Icons';
+import '../styles.css';
 
 const Posts = () => {
     const [posts, setPosts] = useState([]);
     const [selectedPost, setSelectedPost] = useState(null);
     const [comments, setComments] = useState([]);
-    const [search, setSearch] = useState('');
     const [commentsOpen, setCommentsOpen] = useState(false);
-    const [searchCriteria, setSearchCriteria] = useState('title');
     const [isLoading, setIsLoading] = useState(true);
     const [filteredPosts, setFilteredPosts] = useState([]);
-    const { user } = useContext(AuthContext);
+    const user = useUser();
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -63,45 +62,36 @@ const Posts = () => {
         }
     };
 
-
-
     const viewComments = () => { setCommentsOpen(!commentsOpen) };
 
-    //const filteredPosts = posts.filter(post => search==='' || searchCriteria==="title"?  post.title.includes(search): post.id===search);
-
-
-    if (isLoading) return <h1>Loading...</h1>;
+    if (isLoading) return <div>Loading...</div>;
 
     return (
-        <div>
-            <h1>Posts</h1>
-            <div>
-                <button onClick={handleAdd}>Add Post</button>
-                {<Search features={[["title","Title"], ["id","Post Number"]]} list={posts} setFilteredList={setFilteredPosts}/>}
-                {/* <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search posts" /> */}
+        <div className="container">
+            <div className="header">
+                <h1 className="title">Posts</h1>
+                <div className="flex-container">
+                    <Search features={[["title", "Title"], ["id", "Post Number"]]} list={posts} setFilteredList={setFilteredPosts} />
+                    <button className="button" onClick={handleAdd}>
+                        <AddIcon />
+                        Add Post
+                    </button>
+                </div>
             </div>
-            {/* <div>
-            <label>Search By:</label>
-
-                <select onChange={(e) => setSearchCriteria(e.target.value)}>
-                   
-                    <option value="title">Title</option>
-                    <option value="id">Post Number</option>
-                </select>
-                <input
-                    type="text"
-                    placeholder="Search term"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                />
-            </div> */}
-            <ul>
+            <ul className="list">
                 {filteredPosts.map(post => (
-                    <li key={post.id} onClick={() => handleSelect(post)}>
-                        <label>{post.id} </label>{post.title}
-
-                        <button onClick={() => handleUpdate(post.id)}>Update</button>
-                        <button onClick={() => handleDelete(post.id)}>Delete</button>
+                    <li key={post.id} className="list-item" onClick={() => handleSelect(post)}>
+                        <div>
+                            <strong>{post.id +'. ' + post.title}</strong>
+                        </div>
+                        <div>
+                            <button className="icon-button" onClick={() => handleUpdate(post.id)}>
+                                <EditIcon />
+                            </button>
+                            <button className="icon-button" onClick={() => handleDelete(post.id)}>
+                                <DeleteIcon />
+                            </button>
+                        </div>
                     </li>
                 ))}
             </ul>
@@ -109,13 +99,22 @@ const Posts = () => {
                 <div>
                     <h2>{selectedPost.title}</h2>
                     <p>{selectedPost.body}</p>
-                    <h3 onClick={viewComments}>{commentsOpen ? "Comments:" : "View Comments"}</h3>
-                    {commentsOpen && <ul>
-                        {comments.map(com => (
-                            <li key={com.id}><Comment comment={com} comments={comments} setComments={setComments}/></li>
-                        ))}
-                    </ul>}
-                    <button onClick={handleAddComment}>Add Comment</button>
+                    <button className="button" onClick={handleAddComment}>
+                        <CommentIcon />
+                        Add Comment
+                    </button>
+                    <h3 onClick={viewComments} style={{ cursor: 'pointer', marginTop: '20px' }}>
+                        {commentsOpen ? "Comments:" : "View Comments"}
+                    </h3>
+                    {commentsOpen && (
+                        <ul className="list">
+                            {comments.map(com => (
+                                <li key={com.id} className="list-item">
+                                    <Comment comment={com} comments={comments} setComments={setComments} />
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
             )}
         </div>

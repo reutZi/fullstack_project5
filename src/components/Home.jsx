@@ -1,24 +1,21 @@
-// src/components/Home.js
-import React, {useContext} from 'react';
+import React from 'react';
 import NavBar from './NavBar';
-import AuthContext from '../contexts/AuthContext';
-import { Box, Typography, Container } from '@mui/material';
+import { useUser } from '../contexts/AuthContext';
+import '../styles.css';
 
 const Home = ({ children }) => {
-  const { user } = useContext(AuthContext);
+    const user = useUser();
 
     return (
-      <Box>
-      <NavBar />
-      <Container>
-        <Typography variant="h3" component="h1" sx={{ marginTop: 4 }}>
-          Welcome, {user.name}
-        </Typography>
-        <Box sx={{ marginTop: 4 }}>
-          {children}
-        </Box>
-      </Container>
-    </Box>
+        <div>
+            <NavBar />
+            <div className="container">
+                <h1>Welcome, {user.name}</h1>
+                <div className="welcome-container">
+                    {children}
+                </div>
+            </div>
+        </div>
     );
 };
 
