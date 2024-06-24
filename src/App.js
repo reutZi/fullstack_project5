@@ -1,6 +1,5 @@
-// src/App.js
 import React from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, useLocation } from "react-router-dom";
 import AuthProvider from "./contexts/AuthContext";
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -12,18 +11,25 @@ import Albums from "./components/Albums";
 import Info from "./components/Info";
 import PrivateRoute from "./components/PrivateRoute";
 import PhotosPage from "./components/PhotosPage";
-import PostsPageA from "./components/PostsPageA";
+import NavBar from "./components/NavBar";
 import PostContent from "./components/PostContent";
 
 const App = () => {
+  const location = useLocation();
+
+  // List of paths where the NavBar should not be displayed
+  const noNavBarPaths = ["/login", "/register", "/userdetails"];
+
   return (
     <AuthProvider>
+      {!noNavBarPaths.includes(location.pathname) && <NavBar />}
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/userdetails" element={<UserDetails />} />
+
         <Route
-          path="/home"
+          path="/users/:userId/home"
           element={
             <PrivateRoute>
               <Home />
@@ -31,7 +37,7 @@ const App = () => {
           }
         />
         <Route
-          path="/todos"
+          path="/users/:userId/todos"
           element={
             <PrivateRoute>
               <Todos />
@@ -39,7 +45,7 @@ const App = () => {
           }
         />
         <Route
-          path="/albums/:albumId/photos"
+          path="/users/:userId/albums/:albumId/photos"
           element={
             <PrivateRoute>
               <PhotosPage />
@@ -47,7 +53,7 @@ const App = () => {
           }
         />
         <Route
-          path="/posts"
+          path="/users/:userId/posts"
           element={
             <PrivateRoute>
               <PostsPageA />
@@ -63,7 +69,15 @@ const App = () => {
           }
         />
         <Route
-          path="/albums"
+          path="/users/:userId/posts/:postId/postContent"
+          element={
+            <PrivateRoute>
+              <PostContent />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/users/:userId/albums"
           element={
             <PrivateRoute>
               <Albums />
@@ -71,13 +85,14 @@ const App = () => {
           }
         />
         <Route
-          path="/info"
+          path="/users/:userId/info"
           element={
             <PrivateRoute>
               <Info />
             </PrivateRoute>
           }
         />
+
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </AuthProvider>

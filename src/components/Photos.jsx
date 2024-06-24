@@ -6,13 +6,12 @@ import '../styles.css';
 
 const APIURL = 'http://localhost:5000/photos';
 
-const Photos = ({ albumId }) => {
-    const [photos, setPhotos] = useState([]);
+const Photos = ({ albumId, photos, setPhotos }) => {
     const [startIndex, setStartIndex] = useState(0);
     const [loadingMore, setLoadingMore] = useState(false);
 
     const fetchPhotos = async () => {
-        const response = await axios.get(`${APIURL}?albumId=${albumId}&_start=${startIndex}&_limit=10`);
+        const response = await axios.get(`${APIURL}?albumId=${albumId}&_start=${startIndex}&_limit=8`);
         setPhotos(response.data);
         setLoadingMore(false);
     };
@@ -38,6 +37,11 @@ const Photos = ({ albumId }) => {
 
     return (
         <div>
+            {photos.length === 0 && !loadingMore && (
+                <div className="empty-album-message">
+                   This album is currently empty. Start adding your favorite photos!
+                </div>
+            )}
             <div className="grid-container">
                 {photos.map(photo => (
                     <Photo
@@ -48,14 +52,15 @@ const Photos = ({ albumId }) => {
                     />
                 ))}
             </div>
+           { photos.length > 0 &&
             <div className="flex-container">
-                <button onClick={() => setStartIndex(Math.max(0, startIndex - 10))} disabled={startIndex === 0} className="button">
+                <button onClick={() => setStartIndex(Math.max(0, startIndex - 8))} disabled={startIndex === 0} className="button arrow">
                     <ArrowBackIcon />
                 </button>
-                <button onClick={() => setStartIndex(startIndex + 10)} disabled={photos.length < 10} className="button">
+                <button onClick={() => setStartIndex(startIndex + 8)} disabled={photos.length <8} className="button arrow">
                     <ArrowForwardIcon />
                 </button>
-            </div>
+            </div>}
             {loadingMore && <div>Loading...</div>}
         </div>
     );
