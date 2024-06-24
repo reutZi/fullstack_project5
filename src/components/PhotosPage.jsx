@@ -2,18 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Photos from './Photos';
-import { AddIcon } from './Icons';
+import { AddIcon, ArrowBackIcon } from './Icons';
 import '../styles.css';
 
 const PhotosPage = () => {
     const { albumId } = useParams();
+    const [photos, setPhotos] = useState([]);
     const [albumTitle, setAlbumTitle] = useState('');
     const navigate = useNavigate();
+    const [maxId, setMaxId] = useState(0);
 
     useEffect(() => {
         const fetchAlbumTitle = async () => {
-            const response = await axios.get(`http://localhost:5000/albums/${albumId}`);
-            setAlbumTitle(response.data.title);
+            const response = await axios.get(`http://localhost:5000/albums?id=${albumId}`)
+            setAlbumTitle(response.data[0].title);
+            const res = await axios.get(`http://localhost:5000/photos`);
+            let allPhotos = res.data;
+            let maxIdFromDB = allPhotos.length > 0 ? Math.max(...allPhotos.map(p => p.id)) : 0;
+            setMaxId(maxIdFromDB);
         };
         fetchAlbumTitle();
     }, [albumId]);
@@ -22,14 +28,17 @@ const PhotosPage = () => {
         const title = prompt('Enter photo title');
         const thumbnailUrl = prompt('Enter thumbnail URL');
         if (title && thumbnailUrl) {
+            var newId = maxId + 1;
             const response = await axios.post('http://localhost:5000/photos', {
+                id: toString(newId),
                 title,
                 thumbnailUrl,
-                albumId
+                albumId: Number(albumId)
             });
+            setMaxId(newId);
             if (response.status === 201) {
                 alert('Photo added successfully');
-                window.location.reload(); // To refresh and show the new photo
+                setPhotos([...photos, response.data]);
             } else {
                 alert('Failed to add photo');
             }
@@ -46,11 +55,12 @@ const PhotosPage = () => {
                         Add Photo
                     </button>
                     <button className="button" onClick={() => navigate('/albums')}>
+                       <ArrowBackIcon />
                         Back to Albums
                     </button>
                 </div>
             </div>
-            <Photos albumId={albumId} />
+            <Photos albumId={albumId} photos={photos} setPhotos={setPhotos} />
         </div>
     );
 };

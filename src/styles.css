@@ -26,7 +26,7 @@ body {
 
 .button {
     margin-left: 10px;
-    background-color: #3f51b5;
+    background-color: #4c5993;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -84,7 +84,7 @@ body {
 .form button {
     width: 100%;
     padding: 10px;
-    background-color: #3f51b5;
+    background-color: #4c5993;
     color: white;
     border: none;
     cursor: pointer;
@@ -100,9 +100,9 @@ body {
 
 .grid-container {
     display: grid;
-    gap: 10px;
+    gap: 50px;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    grid-template-columns: repeat(5, 1fr); 
+    grid-template-columns: repeat(4, 1fr); 
 }
 .card {
     border: 1px solid #ccc;
@@ -202,7 +202,7 @@ body {
 
 .comment-button {
     margin-left: 5px;
-    background-color: #3f51b5;
+    background-color: #4c5993;
     color: white;
     border: none;
     padding: 5px 10px;
@@ -211,7 +211,7 @@ body {
 }
 
 .navbar {
-    background-color: #3f51b5;
+    background-color: #4c5993;
     padding: 10px;
 }
 
@@ -259,4 +259,28 @@ body {
 
 .nav-list button:hover {
     background-color: #303f9f;
+}
+
+.empty-album-message {
+    text-align: center;
+    font-size: 1.2em;
+    color: #555;
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-album-message svg {
+    margin-right: 10px;
+    fill: #555;
+}
+
+.arrow {
+    margin-top: 15px;
+    background-color: rgb(10, 115, 150);
+}
+
+.arrow:disabled {
+    background-color: #999;
 }

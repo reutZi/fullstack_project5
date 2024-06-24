@@ -24,7 +24,7 @@ const Login = () => {
         try {
             const response = await axios.get(`${API_URL}?username=${data.userName}`);
 
-            if (!response.status === 200) {
+            if (response.data.length === 0) {
                 throw new Error('Username does not exist');
             }
 
@@ -35,6 +35,7 @@ const Login = () => {
             } else {
                 throw new Error('Invalid password.');
             }
+
         } catch (error) {
             alert(error);
         }

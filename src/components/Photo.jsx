@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../styles.css';
+import { DeleteIcon, EditIcon } from './Icons';
 
 const Photo = ({ photo, onDelete, onUpdate }) => {
     const [isEditing, setIsEditing] = useState(false);
@@ -11,6 +12,10 @@ const Photo = ({ photo, onDelete, onUpdate }) => {
 
     const handleSaveClick = () => {
         onUpdate(photo.id, newTitle);
+        setIsEditing(false);
+    };
+
+    const handleCancelClick = () => {
         setIsEditing(false);
     };
 
@@ -30,12 +35,20 @@ const Photo = ({ photo, onDelete, onUpdate }) => {
                 )}
             </div>
             <div className="card-actions">
-                {isEditing ? (
-                    <button onClick={handleSaveClick} className="button">Save</button>
-                ) : (
-                    <button onClick={handleUpdateClick} className="button">Update</button>
-                )}
-                <button onClick={() => onDelete(photo.id)} className="button">Delete</button>
+                {isEditing &&
+                    <div>
+                    <button onClick={handleSaveClick} className="icon-button">Save</button>
+                    <button onClick={handleCancelClick} className="icon-button">Cancel</button>
+                    </div>}
+                {!isEditing && 
+                <div>
+                <button onClick={handleUpdateClick} className="icon-button">
+                    <EditIcon />
+                </button>
+                <button onClick={() => onDelete(photo.id)} className="icon-button">
+                    <DeleteIcon />
+                </button>
+                </div>}
             </div>
         </div>
     );

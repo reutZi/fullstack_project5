@@ -39,7 +39,13 @@ const UserDetails = () => {
             if (!userData) {
                 throw new Error('User data not found');
             }
+
+            const response = await axios.get(`${API_URL}`);
+            const users = response.data;
+            const maxId = users.length > 0 ? Math.max(...users.map(user => user.id)) : 0;
+
             const newUser = {
+                id: maxId + 1,
                 name: data.name,
                 username: userData.username,
                 email: data.email,

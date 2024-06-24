@@ -41,7 +41,8 @@ const AuthProvider = ({ children }) => {
             if (user) {
                 localStorage.setItem('user', JSON.stringify(user));
                 setUser(user);
-                navigate('/home');
+                console.log("User logged in successfully.");
+                navigate(`/users/${user.id}/home`);
             } else {
                 alert('Unauthorized user.');
             }
