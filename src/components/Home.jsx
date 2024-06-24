@@ -9,6 +9,7 @@ const Home = ({ children }) => {
     return (
         <div>
             <NavBar />
+
             <div className="container">
                 <h1>Welcome, {user.name}</h1>
                 <div className="welcome-container">

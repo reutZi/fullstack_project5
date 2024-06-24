@@ -26,9 +26,9 @@ const Posts = () => {
 
     const handleSelect = async (post) => {
         setSelectedPost(post);
-        const response = await axios.get(`http://localhost:5000/comments?postId=${post.id}`);
-        setComments(response.data);
-        setCommentsOpen(false);
+        // const response = await axios.get(`http://localhost:5000/comments?postId=${post.id}`);
+        // setComments(response.data);
+        // setCommentsOpen(false);
     };
 
     const handleAdd = async () => {
@@ -57,7 +57,7 @@ const Posts = () => {
     const handleAddComment = async () => {
         const body = prompt('Enter comment');
         if (body) {
-            const response = await axios.post('http://localhost:5000/comments', { body, postId: selectedPost.id, name: user.username, email: user.email });
+            const response = await axios.post('http://localhost:5000/comments', { body, postId: selectedPost.id, name: user.username, email: user.email, userID: user.id});
             setComments([...comments, response.data]);
         }
     };

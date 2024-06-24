@@ -12,6 +12,8 @@ import Albums from "./components/Albums";
 import Info from "./components/Info";
 import PrivateRoute from "./components/PrivateRoute";
 import PhotosPage from "./components/PhotosPage";
+import PostsPageA from "./components/PostsPageA";
+import PostContent from "./components/PostContent";
 
 const App = () => {
   return (
@@ -48,7 +50,15 @@ const App = () => {
           path="/posts"
           element={
             <PrivateRoute>
-              <Posts />
+              <PostsPageA />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/posts/:postId/postContent"
+          element={
+            <PrivateRoute>
+              <PostContent />
             </PrivateRoute>
           }
         />
