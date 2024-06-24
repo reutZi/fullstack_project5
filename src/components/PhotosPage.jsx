@@ -4,6 +4,7 @@ import axios from 'axios';
 import Photos from './Photos';
 import { AddIcon, ArrowBackIcon } from './Icons';
 import '../styles.css';
+import { useUser } from '../contexts/AuthContext';
 
 const PhotosPage = () => {
     const { albumId } = useParams();
@@ -11,6 +12,7 @@ const PhotosPage = () => {
     const [albumTitle, setAlbumTitle] = useState('');
     const navigate = useNavigate();
     const [maxId, setMaxId] = useState(0);
+    const user = useUser();
 
     useEffect(() => {
         const fetchAlbumTitle = async () => {
@@ -26,6 +28,7 @@ const PhotosPage = () => {
 
     const handleAddPhoto = async () => {
         const title = prompt('Enter photo title');
+        if(!title) return;
         const thumbnailUrl = prompt('Enter thumbnail URL');
         if (title && thumbnailUrl) {
             var newId = maxId + 1;
@@ -54,7 +57,7 @@ const PhotosPage = () => {
                         <AddIcon />
                         Add Photo
                     </button>
-                    <button className="button" onClick={() => navigate('/albums')}>
+                    <button className="button" onClick={() => navigate(`/users/${user.id}/albums`)}>
                        <ArrowBackIcon />
                         Back to Albums
                     </button>
