@@ -284,3 +284,23 @@ body {
 .arrow:disabled {
     background-color: #999;
 }
+
+
+.contentDiv{
+    background-color: rgb(244, 244, 244);
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    border-radius: 20px;
+}
+
+.postContentDiv{
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 20px;
+    margin-left: 40px;
+}
