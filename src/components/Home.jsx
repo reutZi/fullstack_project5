@@ -7,9 +7,13 @@ const Home = ({ children }) => {
     const user = useUser();
 
     return (
-        <div>
+        <div className="home-background">
             <div className="container">
-                <h1>Welcome, {user.name}</h1>
+            <h1 className='welcome'>
+                    Welcome, {user.name}!
+                    <br />
+                    Let’s make today awesome.
+                </h1>
                 <div className="welcome-container">
                     {children}
                 </div>

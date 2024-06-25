@@ -61,7 +61,7 @@ const Comments = ({postId}) => {
             {commentsOpen &&
             <div>
             <h3 onClick={handleClose} style={{ cursor: 'pointer', marginTop: '20px' }}>Comments:</h3>
-            {comments.length==0 && <h3 onClick={handleClose}>No comments yet</h3>}
+            {comments.length === 0 && <h3 onClick={handleClose}>No comments yet</h3>}
             <ul className="list">
                 {comments.map(com => (
                     <li key={com.id} className="list-item">
