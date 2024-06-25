@@ -24,6 +24,7 @@ const App = () => {
     <AuthProvider>
       {!noNavBarPaths.includes(location.pathname) && <NavBar />}
       <Routes>
+        <Route path="*" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/userdetails" element={<UserDetails />} />
@@ -84,8 +85,6 @@ const App = () => {
             </PrivateRoute>
           }
         />
-
-        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </AuthProvider>
   );

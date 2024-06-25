@@ -10,6 +10,7 @@ const NavBar = () => {
     return (
         <nav className="navbar">
             <ul className="nav-list">
+            {user && 
                 <div className="nav-links">
                     <li><NavLink to={`/users/${user.id}/home`}>Home</NavLink></li>
                     <li><NavLink to={`/users/${user.id}/todos`}>Todos</NavLink></li>
@@ -17,6 +18,7 @@ const NavBar = () => {
                     <li><NavLink to={`/users/${user.id}/albums`}>Albums</NavLink></li>
                     <li><NavLink to={`/users/${user.id}/info`}>Info</NavLink></li>
                 </div>
+                }
                 <li><button onClick={logout}>Logout</button></li>
             </ul>
         </nav>
