@@ -31,8 +31,8 @@ const Comment = ({ comment, comments, setComments }) => {
     return (
         <div className="comment-container">
             {comment.body}
-            {(user.id === comment.userID) && <button className="comment-button" onClick={() => handleUpdateComment(comment.id)}><EditIcon/></button>}
-            {(user.id === comment.userID) && <button className="comment-button" onClick={() => handleDeleteComment(comment.id)}><DeleteIcon/></button>}
+            {(user.id === comment.userID) && <button className="icon-button" onClick={() => handleUpdateComment(comment.id)}><EditIcon/></button>}
+            {(user.id === comment.userID) && <button className="icon-button" onClick={() => handleDeleteComment(comment.id)}><DeleteIcon/></button>}
         </div>
     );
 };

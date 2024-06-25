@@ -17,11 +17,15 @@ const PostContent = () => {
     };
 
     return (
-        <div>
+        <div className='postContentDiv'>
         <button className="button" style={{ marginTop: '20px' }} onClick={handleClose}>Back</button>
+            <div className='contentDiv'>
             <h2>{selectedPost.title}</h2>
             <p>{selectedPost.body}</p>
+            </div>
+            <div className='commentsDiv'>
             <Comments postId={selectedPost.id}/>
+            </div>
         </div>
 
     );
