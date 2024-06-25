@@ -6,23 +6,23 @@ import Register from "./components/Register";
 import UserDetails from "./components/UserDetails";
 import Home from "./components/Home";
 import Todos from "./components/Todos";
-import Posts from "./components/Posts";
 import Albums from "./components/Albums";
 import Info from "./components/Info";
 import PrivateRoute from "./components/PrivateRoute";
 import PhotosPage from "./components/PhotosPage";
 import NavBar from "./components/NavBar";
 import PostContent from "./components/PostContent";
+import PostsPageA from "./components/PostsPageA";
 
 const App = () => {
   const location = useLocation();
 
   // List of paths where the NavBar should not be displayed
-  const noNavBarPaths = ["/login", "/register", "/userdetails"];
+  const noNavBarPaths = ["/login", "/register", "/userdetails", "/"];
 
   return (
     <AuthProvider>
-      {!noNavBarPaths.includes(location.pathname) && <NavBar />}
+      {!noNavBarPaths.includes(location.pathname) && <NavBar />}  
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -60,14 +60,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
-        <Route
-          path="/posts/:postId/postContent"
-          element={
-            <PrivateRoute>
-              <PostContent />
-            </PrivateRoute>
-          }
-        />
+
         <Route
           path="/users/:userId/posts/:postId/postContent"
           element={
@@ -93,7 +86,7 @@ const App = () => {
           }
         />
 
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/login" />} /> 
       </Routes>
     </AuthProvider>
   );
