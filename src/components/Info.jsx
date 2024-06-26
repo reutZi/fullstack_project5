@@ -13,7 +13,6 @@ const Info = () => {
                 <div className="info-item"><strong>Username:</strong> {user.username}</div>
                 <div className="info-item"><strong>Email:</strong> {user.email}</div>
                 <div className="info-item"><strong>Phone:</strong> {user.phone}</div>
-                <div className="info-item"><strong>Website:</strong> {user.website}</div>
                 <h2>Address</h2>
                 <div className="info-item"><strong>Street:</strong> {user.address.street}</div>
                 <div className="info-item"><strong>Suite:</strong> {user.address.suite}</div>

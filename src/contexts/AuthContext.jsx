@@ -39,9 +39,12 @@ const AuthProvider = ({ children }) => {
             const user = response.data[0];
 
             if (user) {
-                localStorage.setItem('user', JSON.stringify(user));
-                setUser(user);
-                console.log("User logged in successfully.");
+                // Destructure the user object to exclude the website field
+            const { website, ...userWithoutWebsite } = user;
+            
+            // Save the modified user object to localStorage and update the state
+            localStorage.setItem('user', JSON.stringify(userWithoutWebsite));
+            setUser(userWithoutWebsite);
                 navigate(`/users/${user.id}/home`);
             } else {
                 alert('Unauthorized user.');
